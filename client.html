@@ -59,8 +59,14 @@
     </div>
     <!--This tray is for other things, such as Saving to PNG and/or drawing text. -->
     <div id='tray_options' class='tray' data-type='options'>
-        <canvas class="tray_object" data-value='Save'></canvas>
         <canvas class="tray_object" data-value='Undo'></canvas>
+        <canvas class="tray_object" data-value='Save'></canvas>
+        <canvas class="tray_object" data-value='Load'></canvas>
+        <form id="loadFileForm">
+            <input type="file"><br>
+            <img src="" height="200" alt="Image preview..." id="sourceImage">
+            <script src="FileLoader.js"></script>
+        </form>
     </div>
     <!-- The tools tray -->
     <div id='tray_tool' class='tray' data-type='tool'>
@@ -70,7 +76,7 @@
         <div class="tray_object" data-value='text'>
             Text
         </div>
-        <form>
+        <form onsubmit="return false;">
             Text:<br>
             <input type="text" name="text" id="textInput" value="value"><br>
         </form>
@@ -85,5 +91,8 @@
     <script src="/FileSaver.js"></script>
     <!--Script at the end so the canvas is already here when it arrives-->
     <script src="/client.js"></script>
+    <!--JOSH's beautiful file loading-->
+    <!--Bring in the loadfile doc so we can do exactly what you would assume it's for-->
+    <script src="/public/FileLoader.js"></script>
 </body>
 </html>

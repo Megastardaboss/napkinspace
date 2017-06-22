@@ -61,12 +61,6 @@
     <div id='tray_options' class='tray' data-type='options'>
         <canvas class="tray_object" data-value='Undo'></canvas>
         <canvas class="tray_object" data-value='Save'></canvas>
-        <canvas class="tray_object" data-value='Load'></canvas>
-        <form id="loadFileForm">
-            <input type="file"><br>
-            <img src="" height="200" alt="Image preview..." id="sourceImage">
-            <script src="FileLoader.js"></script>
-        </form>
     </div>
     <!-- The tools tray -->
     <div id='tray_tool' class='tray' data-type='tool'>
@@ -79,6 +73,14 @@
         <form onsubmit="return false;">
             Text:<br>
             <input type="text" name="text" id="textInput" value="value"><br>
+        </form>
+        <div class="tray_object" data-value='image'>
+            Image
+        </div>
+        <form id="loadFileForm">
+            <input type="file"><br>
+            <img src="" id="sourceImage" style="display: none;">
+            <script src="FileLoader.js"></script>
         </form>
     </div>
 

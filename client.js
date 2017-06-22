@@ -5,7 +5,7 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext("2d");
 
 //Brown - '#df4b26'
-var curColor = '#000000';
+var curColor = '#000000';0
 var curTool = "pen";
 /*
 Possible tools:
@@ -108,10 +108,6 @@ $('.tray_object').on('click',function(){
         if(value == 'Save'){
             saveAsPNG();
         }
-        //~~TODO~~ Josh's beautiful file load
-        if(value == 'Load'){
-            previewFile();
-        }
         if(value == 'Undo'){
             //~~Josh~~ This will undo last action
             Drawers.me.pop();
@@ -169,7 +165,7 @@ function draw(partial){
         for(var pathk in Drawers[drawerk]){
             var path = Drawers[drawerk][pathk];
             // ~~Josh~~ this will check if the current path is text or pen
-            if(path.pathType != 'text'){
+            if(path.pathType != 'text' && path.pathType != 'image'){
                 if(path.points.length==0){
                     //This path doesn't have any points in it yet. Move on to the next path.
                     continue;
@@ -208,6 +204,23 @@ function draw(partial){
                     context.fillText(outvalue, path.x, path.y);
                     //Make sure it isn't drawn again
                     path.drawn = 'true';
+                }
+            }
+            else if(path.pathType == 'image'){
+                if(path.drawn == 'false' || !partial){
+
+                    //~~JOSH~~ this segment draws the image according to its path object
+
+                          //Set the origin to the center of the image
+                          context.translate(path.x, path.y);
+
+                          //draw the image
+                          context.drawImage(path.imageValue, path.width / 2 * (-1), path.height / 2 * (-1), path.width, path.height);
+
+                          //reset the boy
+                          context.translate((path.x) * (-1), (path.y) * (-1));
+
+                      path.drawn = 'true';
                 }
             }
         }
@@ -396,6 +409,27 @@ var handleStart = function(point){
         Drawers.me.push(textPath);
         // ~~Josh~~ this is my first draft of a network function for text, based on the other draw function
         socket.emit('newText',{x:textPath.x,y:textPath.y,size:textPath.textSize,stringValue:textPath.stringValue,color:curColor});
+    }else if(curTool == 'image'){
+        previewFile();
+        window.alert("OUT OF PREVIEW FILE");
+        //~~JOSH~~ ~~NOTE~~ try changing these between clientWidth and naturalWidth
+        var useWidth = document.getElementById('sourceImage').naturalWidth / camera.scale;
+        var useHeight = document.getElementById('sourceImage').naturalHeight / camera.scale;
+
+        var imagePath = {
+            x: point.x,
+            y: point.y,
+            width: useWidth,
+            height: useHeight,
+            //~~JOSH~~ idk if this will work...
+            imageValue: document.getElementById('sourceImage'),
+            pathType: 'image',
+            drawn: 'false'
+        };
+        Drawers.me.push(imagePath);
+        window.alert("PATH ADDED");
+        // ~~Josh~~ this is draft 1 of sending images
+        socket.emit('newImage',{x:imagePath.x,y:imagePath.y,imageValue:imagePath.imageValue,height:imagePath.height,width:imagePath.width});
     }
     update();
 }
@@ -588,6 +622,23 @@ socket.on('newText',function(data){
         size: data.size,
         drawn: 'false',
         pathType: 'text'
+    });
+    update();
+
+});
+// ~~Josh~~ this will tell how to handle a received image
+socket.on('newImage',function(data){
+    //Do we have a record of this sender?
+    if(!Drawers[data.sender]){
+        Drawers[data.sender] = new Array();
+    }
+    //Create a new Path for the sender
+    Drawers[data.sender].push({
+        x: data.x,
+        y: data.y,
+        imageValue: data.imageValue,
+        drawn: 'false',
+        pathType: 'image'
     });
     update();
 

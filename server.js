@@ -10,7 +10,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/client.html')
 })
 
-//Setup Server Behavior
+//Setup Server Behavior0
 io.sockets.on('connection', function(socket){
   console.log('CNCT:'+socket.id);
   //When the client disconnects
@@ -27,6 +27,11 @@ io.sockets.on('connection', function(socket){
       console.log('NTXT:'+socket.id);
       data.sender = socket.id;
       socket.broadcast.emit('newText',data);
+  });
+  socket.on('newImage', function(data){
+      console.log('NIMG:'+socket.id);
+      data.sender = socket.id;
+      socket.broadcast.emit('newImage',data);
   });
   //New points for a path
   socket.on('draw', function(data){

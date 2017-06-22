@@ -5,10 +5,7 @@ function previewFile(){
 
                        reader.onloadend = function () {
                             preview.src = reader.result;
-                            var canvas = document.getElementById('canvas');
-                            var context = canvas.getContext("2d");
-                            var useImage = document.getElementById('sourceImage');
-                            context.drawImage(useImage,100,100);
+                            window.alert("IMAGE UPDATED IN PREVIEW FILE");
                        }
 
                        if (file) {
